@@ -1,0 +1,9 @@
+[dependencies]
+
+[workspace]
+  build-members = []
+  compile-option = ""
+  link-option = ""
+  members = []
+  target-dir = ""
+  test-members = []
