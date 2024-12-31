@@ -7,3 +7,4 @@
   members = []
   target-dir = ""
   test-members = []
+  cjc-version = "0.53.13"

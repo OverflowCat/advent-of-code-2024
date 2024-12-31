@@ -1,0 +1,105 @@
+package day02
+
+import std.fs.*
+import std.collection.*
+import std.convert.*
+import std.math.*
+
+// 判断是否单调递增或递减
+func isMonotonic(report: Array<Int32>, skipIndex: ?Int64): Bool {
+    var increasing: ?Bool = None
+    var prev: ?Int32 = None
+    for ((i, ele) in report |> enumerate) {
+        if (let Some(skipIndex) <- skipIndex) {
+            if (i == skipIndex) {
+                continue
+            }
+        }
+        if (let Some(prev) <- prev) {
+            if (ele > prev) {
+                if (let Some(increasing) <- increasing) {
+                    if (!increasing) {
+                        return false
+                    }
+                } else {
+                    increasing = true
+                }
+            } else if (ele < prev) {
+                if (let Some(increasing) <- increasing) {
+                    if (increasing) {
+                        return false
+                    }
+                } else {
+                    increasing = false
+                }
+            }
+        }
+        prev = ele
+    }
+    return true
+}
+
+func isSafe(report: Array<Int32>): Bool {
+    var prev: ?Int32 = None
+    var tolerated: ?Int64 = None
+    // println("Report: ${report}")
+    func tolerate(index: Int64): Bool {
+        if (tolerated.isNone()) {
+            return false
+        }
+        tolerated = index
+        return true
+    }
+
+    // let tolerate2 = {
+    //     =>
+    //     if (tolerated) {
+    //         return false
+    //     }
+    //     tolerated = true
+    //     return true
+    // }
+
+    for ((i, part) in report |> enumerate) {
+        if (let Some(prev) <- prev) {
+            var diff = prev - part
+            // println("prev: ${prev}, part: ${part}, diff: ${diff}")
+            diff = abs(diff)
+            if (diff < 1 || diff > 3) {
+                if (!tolerate(i)) {
+                    return false
+                }
+                continue
+            }
+        }
+        prev = part
+    }
+    return isMonotonic(report, tolerated)
+}
+
+main() {
+    let filePath: Path = Path("./input.txt")
+
+    if (!File.exists(filePath)) {
+        println("Error: The file 'input.txt' does not exist.")
+        return 1
+    }
+
+    var file: File = File(filePath, OpenOption.Open(true, false))
+
+    let fileContent: Array<Byte> = file.readToEnd()
+    file.close()
+
+    let contentString: String = String.fromUtf8(fileContent)
+
+    let reports = contentString.split('\n') |>
+        map {
+        report => report.split(' ') |> map {part: String => Int32.parse(part)} |> collectArray
+    }
+
+    reports |> map(isSafe) |>
+        // forEach(println)
+        filter {it => it} |> count |> println
+
+    return 0
+}

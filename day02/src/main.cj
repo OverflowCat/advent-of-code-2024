@@ -5,10 +5,17 @@ import std.collection.*
 import std.convert.*
 import std.math.*
 
-func isSafe(report: String): Bool {
+func isSafe(report: Array<Int32>, skip: ?Int64): Bool {
     var prev: ?Int32 = None
     var increasing: ?Bool = None
-    for (part in report.split(' ') |> map { part: String => Int32.parse(part) }) {
+
+    for ((i, part) in report |> enumerate) {
+        if (let Some(skip) <- skip) {
+            if (skip == i) {
+                continue
+            }
+        }
+
         if (let Some(prev) <- prev) {
             var diff = prev - part
             if (let Some(increasing) <- increasing) {
@@ -19,7 +26,6 @@ func isSafe(report: String): Bool {
             } else {
                 increasing = diff > 0
             }
-            println("prev: ${prev}, part: ${part}, diff: ${diff}")
             diff = abs(diff)
             if (diff < 1 || diff > 3) {
                 return false
@@ -28,6 +34,20 @@ func isSafe(report: String): Bool {
         prev = part
     }
     return true
+}
+
+func isTolerantlySafe(report: Array<Int32>): Bool {
+    if (isSafe(report, None)) {
+        return true
+    }
+    for (i in 0..report.size) {
+        if (isSafe(report, i)) {
+            println("Skipping ${i}, ${report}")
+            return true
+        }
+    }
+    println("Not safe: ${report}")
+    return false
 }
 
 main() {
@@ -45,7 +65,14 @@ main() {
 
     let contentString: String = String.fromUtf8(fileContent)
 
-    contentString.split('\n') |> map(isSafe) |> filter { it => it } |> count |> println
+    let reports = contentString.split('\n') |>
+        map {
+        report => report.split(' ') |> map {part: String => Int32.parse(part)} |> collectArray
+    }
+
+    reports |> map(isTolerantlySafe) |>
+        // forEach(println)
+        filter {it => it} |> count |> println
 
     return 0
 }
