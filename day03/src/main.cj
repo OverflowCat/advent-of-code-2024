@@ -19,7 +19,7 @@ func readInput(): String {
     String.fromUtf8(fileContent)
 }
 
-main(): Unit {
+func a(): Unit {
     let r = Regex(#"mul\((\d+),(\d+)\)"#).matcher(readInput())
     var sum = 0
     while (let Some(matchData) <- r.find()) {
@@ -29,5 +29,31 @@ main(): Unit {
         let product = a * b
         sum += product
     }
-    println("Sum of all products: ${sum}")
+    println("[Part A] Sum of all products: ${sum}")
+}
+
+func b(): Unit {
+    let r = Regex(#"mul\((\d+),(\d+)\)|do\(\)|don't\(\)"#).matcher(readInput())
+    var sum = 0
+    var enabled = true
+    while (let Some(matchData) <- r.find()) {
+        let op = matchData.matchStr()
+        // println("op: ${op}")
+        if (op == "do()") {
+            enabled = true
+        } else if (op == "don't()") {
+            enabled = false
+        } else if (enabled) {
+            let a = Int64.parse(matchData.matchStr(1))
+            let b = Int64.parse(matchData.matchStr(2))
+            let product = a * b
+            sum += product
+        }
+    }
+    println("[Part B] Sum of all products: ${sum}")
+}
+
+main() {
+    a()
+    b()
 }
