@@ -68,10 +68,10 @@ func a(input: Array<String>): Int64 {
             }
             // 找斜向的四个字母：XMAS, SAMX
             // 1. 左上<->右下
-            if (chr == LETTERS[0]) {
-                if (y + 3 < dim && x + 3 < dim) {
+            if (chr == LETTERS[0]) { // 左上 -> 右下
+                if (x < dim - 3 && y < dim - 3) {
                     if (input[y + 1][x + 1] == XMAS[1] && input[y + 2][x + 2] == XMAS[2] && input[y + 3][x + 3] == XMAS[3]) {
-                        println("3. Found XMAS at (${y}, ${x})")
+                        println("2. Found XMAS at (${y}, ${x})")
                         usedMap[y][x] = true
                         usedMap[y + 1][x + 1] = true
                         usedMap[y + 2][x + 2] = true
@@ -79,10 +79,9 @@ func a(input: Array<String>): Int64 {
                         count += 1
                     }
                 }
-            } else if (chr == LETTERS[3]) {
-                if (y - 3 >= 0 && x - 3 >= 0) {
-                    if (input[y - 1][x - 1] == XMAS[2] && input[y - 2][x - 2] == XMAS[1] && input[y - 3][x - 3] == XMAS[0]) {
-                        println("4. Found XMAS at (${y}, ${x})")
+                if (x > 2 && y > 2) {
+                    if (input[y - 1][x - 1] == XMAS[1] && input[y - 2][x - 2] == XMAS[2] && input[y - 3][x - 3] == XMAS[3]) {
+                        println("3. Found XMAS at (${y}, ${x})")
                         usedMap[y][x] = true
                         usedMap[y - 1][x - 1] = true
                         usedMap[y - 2][x - 2] = true
@@ -92,25 +91,25 @@ func a(input: Array<String>): Int64 {
                 }
             }
             // 2. 左下<->右上
-            if (chr == LETTERS[0]) {
-                if (y - 3 >= 0 && x + 3 < dim) {
-                    if (input[y - 1][x + 1] == XMAS[1] && input[y - 2][x + 2] == XMAS[2] && input[y - 3][x + 3] == XMAS[3]) {
+            if (chr == LETTERS[0]) { // 右上 -> 左下
+                println("x: ${x}, y: ${y}, dim: ${dim}")
+                if (x > 2 && y < dim - 3) {
+                    if (input[y + 1][x - 1] == XMAS[1] && input[y + 2][x - 2] == XMAS[2] && input[y + 3][x - 3] == XMAS[3]) {
                         println("5. Found XMAS at (${y}, ${x})")
-                        usedMap[y][x] = true
-                        usedMap[y - 1][x + 1] = true
-                        usedMap[y - 2][x + 2] = true
-                        usedMap[y - 3][x + 3] = true
-                        count += 1
-                    }
-                }
-            } else if (chr == LETTERS[3]) {
-                if (y + 3 < dim && x - 3 >= 0) {
-                    if (input[y + 1][x - 1] == XMAS[2] && input[y + 2][x - 2] == XMAS[1] && input[y + 3][x - 3] == XMAS[0]) {
-                        println("6. Found XMAS at (${y}, ${x})")
                         usedMap[y][x] = true
                         usedMap[y + 1][x - 1] = true
                         usedMap[y + 2][x - 2] = true
                         usedMap[y + 3][x - 3] = true
+                        count += 1
+                    }
+                }
+                if (x < dim - 3 && y > 2) {
+                    if (input[y - 1][x + 1] == XMAS[1] && input[y - 2][x + 2] == XMAS[2] && input[y - 3][x + 3] == XMAS[3]) {
+                        println("6. Found XMAS at (${y}, ${x})")
+                        usedMap[y][x] = true
+                        usedMap[y - 1][x + 1] = true
+                        usedMap[y - 2][x + 2] = true
+                        usedMap[y - 3][x + 3] = true
                         count += 1
                     }
                 }
