@@ -135,13 +135,13 @@ func b(input: Array<String>): Int64 {
     let dim = input.size
     var count = 0
 
-    let usedMap = input |> map {line: String => (line |> map {chr => false} |> collectArray)} |> collectArray
+    let usedMap = input |> map {line: String => (line |> map {_ => false} |> collectArray)} |> collectArray
 
     let runes = input |> map {line: String => line.runes() |> collectArray} |> collectArray
 
-    let A = "A".runes().first().getOrThrow()
-    let M = "M".runes().first().getOrThrow()
-    let S = "S".runes().first().getOrThrow()
+    let A = r"A"
+    let M = r"M"
+    let S = r"S"
 
     // 九宫格
     for (y in 0..dim - 2) {
